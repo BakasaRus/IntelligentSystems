@@ -17,7 +17,7 @@ for i in range(k):
     stats.append((count, predicted, f_score))
 
     recall_w += cm[i][i] / total
-    precision_w += cm[i][i] * count / predicted / total
+    precision_w += (cm[i][i] * count / predicted / total) if predicted > 0 else 0
 
 macro_f = 2 * precision_w * recall_w / (precision_w + recall_w)
 micro_f = sum([stats[i][0] * stats[i][2] for i in range(k)]) / total

@@ -11,8 +11,8 @@ precision_w = 0
 for i in range(k):
     count = sum(cm[i])
     predicted = sum(cm[j][i] for j in range(k))
-    precision = cm[i][i] / count
-    recall = cm[i][i] / predicted
+    precision = cm[i][i] / count if count > 0 else 0
+    recall = cm[i][i] / predicted if predicted > 0 else 0
     f_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
     stats.append((count, predicted, f_score))
 

@@ -63,12 +63,18 @@ if window == 'variable':
     data.sort(key=lambda x: x.distance)
     h = data[h].distance
 
-sum_up = 0
-sum_down = 0
-for entity in data:
-    kf = kernel_function(entity.distance / h)
-    sum_up += entity.target * kf
-    sum_down += kf
+overall = sum([entity.target for entity in data]) / n
 
-query.target = sum_up / sum_down
+if h == 0:
+    same = [entity.target for entity in data if entity.features == query.features]
+    query.target = sum(same) / len(same) if len(same) > 0 else overall
+else:
+    sum_up = 0
+    sum_down = 0
+    for entity in data:
+        kf = kernel_function(entity.distance / h)
+        sum_up += entity.target * kf
+        sum_down += kf
+    query.target = sum_up / sum_down if sum_down != 0 else overall
+
 print(f'{query.target:.10f}')

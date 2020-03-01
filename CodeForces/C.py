@@ -1,5 +1,6 @@
 import math
 
+
 class Entity:
     features = None
     target = None
@@ -35,7 +36,7 @@ def get_kernel_function(name):
 def get_distance_function(name):
     distances = {
         'manhattan': lambda x, y: sum([abs(a - b) for (a, b) in zip(x, y)]),
-        'euclidean': lambda x, y: sum([a ** 2 + b ** 2 for (a, b) in zip(x, y)]) ** 0.5,
+        'euclidean': lambda x, y: sum([(a - b) ** 2 for (a, b) in zip(x, y)]) ** 0.5,
         'chebyshev': lambda x, y: max([abs(a - b) for (a, b) in zip(x, y)])
     }
     return distances[name]

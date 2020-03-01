@@ -24,10 +24,10 @@ def get_kernel_function(name):
         'epanechnikov': lambda u: 3/4 * (1 - u ** 2) if abs(u) < 1 else 0,
         'quartic': lambda u: 15/16 * (1 - u ** 2) ** 2 if abs(u) < 1 else 0,
         'triweight': lambda u: 35/32 * (1 - u ** 2) ** 3 if abs(u) < 1 else 0,
-        'tricube': lambda u: 70/81 * (1 - u ** 3) ** 3 if abs(u) < 1 else 0,
+        'tricube': lambda u: 70/81 * (1 - abs(u ** 3)) ** 3 if abs(u) < 1 else 0,
         'gaussian': lambda u: 1 / math.sqrt(math.tau) * math.exp(-1/2 * u ** 2),
         'cosine': lambda u: math.pi / 4 * math.cos(math.pi / 2 * u) if abs(u) < 1 else 0,
-        'logistic': lambda u: 1 / (math.exp(u) + math.e + math.exp(-u)),
+        'logistic': lambda u: 1 / (math.exp(u) + 2 + math.exp(-u)),
         'sigmoid': lambda u: 2 / math.pi * 1 / (math.exp(u) + math.exp(-u)),
     }
     return kernels[name]

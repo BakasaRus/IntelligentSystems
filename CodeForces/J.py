@@ -1,7 +1,17 @@
+from bisect import bisect_left
+
+
+def index(a, x):
+    i = bisect_left(a, x)
+    if i != len(a) and a[i] == x:
+        return i
+    raise ValueError
+
+
 def ranking(a):
     seq = sorted(a)
-    index = [seq.index(v) + 1 for v in a]
-    return index
+    res = [index(seq, v) + 1 for v in a]
+    return res
 
 
 n = int(input())

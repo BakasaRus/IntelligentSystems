@@ -18,8 +18,9 @@ for x in range(1, k + 1):
     ey = 0
     ey2 = 0
     for y in x_y[x]:
-        ey += (count[x][y] / count_x[x]) * y
-        ey2 += (count[x][y] / count_x[x]) * y * y
+        r = (count[x][y] / count_x[x])
+        ey += r * y
+        ey2 += r * y * y
     dy += (ey2 - ey ** 2) * (count_x[x] / n)
 
 print(dy)

@@ -36,10 +36,8 @@ def mul(vertex1: Matrix, vertex2: Matrix) -> Matrix:
     res = zero_matrix(rowsA, colsB)
     for i in range(rowsA):
         for j in range(colsB):
-            total = 0
             for ii in range(colsA):
-                total += vertex1[i][ii] * vertex2[ii][j]
-            res[i][j] = total
+                res[i][j] += vertex1[i][ii] * vertex2[ii][j]
 
     return res
 
@@ -163,7 +161,7 @@ for i in range(n - 1, m - 1, -1):
         indices = [x - 1 for x in cmd[1][1:]]
         if len(indices) > 1:
             for ind_of_matrix, matrix_ind in enumerate(indices, 0):
-                idxs = indices[:ind_of_matrix + 1] + indices[ind_of_matrix + 1:]
+                idxs = indices[:ind_of_matrix] + indices[ind_of_matrix + 1:]
                 matrices = [vertices[i] for i in idxs]
                 matrices.append(diffVertices[i])
                 diffVertices[matrix_ind] = sum_v([

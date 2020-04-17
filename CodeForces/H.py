@@ -118,9 +118,9 @@ for i in range(n - m):
         diffVertices.append(zero_matrix(r, c))
     else:
         print_matrix(vertex)
-        diffVertices.append([float(x) for x in input().split()] for i in range(r))
+        diffVertices.append([[float(x) for x in input().split()] for i in range(r)])
 
-for i in range(n - 1, m - 1):
+for i in range(n - 1, m - 1, -1):
     cmd = commands[i - m]
     if cmd[0] == 'tnh':
         idx = cmd[1][0] - 1

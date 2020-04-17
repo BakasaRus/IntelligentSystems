@@ -84,7 +84,7 @@ for i in range(m):
     diffVertices.append(zero_matrix(rows, cols))
 
 if k + m > n:
-    for i in range(n - k, m + 1):
+    for i in range(n - k, m):
         diffVertices[i] = list(map(float, input().split()))
         print_matrix(vertices[i])
 
@@ -117,36 +117,64 @@ for i in range(n - m):
     if i < n - k - m:
         diffVertices.append(zero_matrix(r, c))
     else:
-        print_matrix(vertex)
+        print_matrix(vertices[-1])
         diffVertices.append([[float(x) for x in input().split()] for i in range(r)])
 
 for i in range(n - 1, m - 1, -1):
     cmd = commands[i - m]
     if cmd[0] == 'tnh':
         idx = cmd[1][0] - 1
-        diffVertices[idx] = sum_v([diffVertices[idx], had([tnh_inv(vertices[idx]), diffVertices[i]])])
+        diffVertices[idx] = sum_v([
+            diffVertices[idx],
+            had([
+                tnh_inv(vertices[idx]),
+                diffVertices[i]
+            ])
+        ])
     elif cmd[0] == 'rlu':
         alpha = 1.0 / cmd[1][0]
         idx = cmd[1][1] - 1
-        diffVertices[idx] = sum_v([diffVertices[idx], had([rlu_inv(vertices[idx], alpha), diffVertices[i]])])
+        diffVertices[idx] = sum_v([
+            diffVertices[idx],
+            had([
+                rlu_inv(vertices[idx], alpha),
+                diffVertices[i]
+            ])
+        ])
     elif cmd[0] == 'mul':
         idx1 = cmd[1][0] - 1
         idx2 = cmd[1][1] - 1
-        diffVertices[idx1] = sum_v([diffVertices[idx1], mul(diffVertices[i], transpose(vertices[idx2]))])
-        diffVertices[idx2] = sum_v([diffVertices[idx2], mul(transpose(vertices[idx1]), diffVertices[i])])
+        diffVertices[idx1] = sum_v([
+            diffVertices[idx1],
+            mul(diffVertices[i], transpose(vertices[idx2]))
+        ])
+        diffVertices[idx2] = sum_v([
+            diffVertices[idx2],
+            mul(transpose(vertices[idx1]), diffVertices[i])
+        ])
     elif cmd[0] == 'sum':
         for it in cmd[1][1:]:
             idx = it - 1
-            diffVertices[idx] = sum_v([diffVertices[idx], diffVertices[i]])
+            diffVertices[idx] = sum_v([
+                diffVertices[idx],
+                diffVertices[i]
+            ])
     elif cmd[0] == 'had':
         indices = [x - 1 for x in cmd[1][1:]]
         if len(indices) > 1:
             for ind_of_matrix, matrix_ind in enumerate(indices, 0):
                 idxs = indices[:ind_of_matrix + 1] + indices[ind_of_matrix + 1:]
-                matrices = [vertices[i] for i in idxs].append(diffVertices[i])
-                diffVertices[matrix_ind] = sum_v([diffVertices[matrix_ind], had(matrices)])
+                matrices = [vertices[i] for i in idxs]
+                matrices.append(diffVertices[i])
+                diffVertices[matrix_ind] = sum_v([
+                    diffVertices[matrix_ind],
+                    had(matrices)
+                ])
         else:
-            diffVertices[indices[0]] = sum_v([diffVertices[indices[0]], diffVertices[i]])
+            diffVertices[indices[0]] = sum_v([
+                diffVertices[indices[0]],
+                diffVertices[i]
+            ])
 
 for i in range(m):
     print_matrix(diffVertices[i])

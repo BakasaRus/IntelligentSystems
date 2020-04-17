@@ -8,15 +8,27 @@ def zero_matrix(rows, cols, initial=0.):
     return [[initial] * cols for i in range(rows)]
 
 
-def tnh(vertex: Matrix):
+def transpose(vertex: Matrix) -> Matrix:
+    return list(map(list, zip(*vertex)))
+
+
+def tnh(vertex: Matrix) -> Matrix:
     return [[math.tanh(x) for x in row] for row in vertex]
 
 
-def rlu(vertex: Matrix, alpha: float):
+def tnh_inv(vertex: Matrix) -> Matrix:
+    return [[1 / math.cosh(x) ** 2 for x in row] for row in vertex]
+
+
+def rlu(vertex: Matrix, alpha: float) -> Matrix:
     return [[max(x, x * alpha) for x in row] for row in vertex]
 
 
-def mul(vertex1: Matrix, vertex2: Matrix):
+def rlu_inv(vertex: Matrix, alpha: float) -> Matrix:
+    return [[1.0 if x >= 0 else alpha for x in row] for row in vertex]
+
+
+def mul(vertex1: Matrix, vertex2: Matrix) -> Matrix:
     rowsA = len(vertex1)
     colsA = len(vertex1[0])
     rowsB = len(vertex2)
@@ -32,7 +44,7 @@ def mul(vertex1: Matrix, vertex2: Matrix):
     return res
 
 
-def sum_v(vertices: List[Matrix]):
+def sum_v(vertices: List[Matrix]) -> Matrix:
     n, rows, cols = len(vertices), len(vertices[0]), len(vertices[0][0])
     res = zero_matrix(rows, cols)
     for i in range(rows):
@@ -42,7 +54,7 @@ def sum_v(vertices: List[Matrix]):
     return res
 
 
-def had(vertices: List[Matrix]):
+def had(vertices: List[Matrix]) -> Matrix:
     n, rows, cols = len(vertices), len(vertices[0]), len(vertices[0][0])
     res = zero_matrix(rows, cols, 1.0)
     for i in range(rows):
@@ -50,6 +62,11 @@ def had(vertices: List[Matrix]):
             for k in range(n):
                 res[i][j] *= vertices[k][i][j]
     return res
+
+
+def print_matrix(vertex: Matrix):
+    for row in vertex:
+        print(*row)
 
 
 n, m, k = map(int, input().split())
@@ -69,7 +86,7 @@ for i in range(m):
 if k + m > n:
     for i in range(n - k, m + 1):
         diffVertices[i] = list(map(float, input().split()))
-        print(*vertices[i])
+        print_matrix(vertices[i])
 
 for i in range(n - m):
     cmd = commands[i]
@@ -100,5 +117,36 @@ for i in range(n - m):
     if i < n - k - m:
         diffVertices.append(zero_matrix(r, c))
     else:
-        print(*vertex)
+        print_matrix(vertex)
         diffVertices.append([float(x) for x in input().split()] for i in range(r))
+
+for i in range(n - 1, m - 1):
+    cmd = commands[i - m]
+    if cmd[0] == 'tnh':
+        idx = cmd[1][0] - 1
+        diffVertices[idx] = sum_v([diffVertices[idx], had([tnh_inv(vertices[idx]), diffVertices[i]])])
+    elif cmd[0] == 'rlu':
+        alpha = 1.0 / cmd[1][0]
+        idx = cmd[1][1] - 1
+        diffVertices[idx] = sum_v([diffVertices[idx], had([rlu_inv(vertices[idx], alpha), diffVertices[i]])])
+    elif cmd[0] == 'mul':
+        idx1 = cmd[1][0] - 1
+        idx2 = cmd[1][1] - 1
+        diffVertices[idx1] = sum_v([diffVertices[idx1], mul(diffVertices[i], transpose(vertices[idx2]))])
+        diffVertices[idx2] = sum_v([diffVertices[idx2], mul(transpose(vertices[idx1]), diffVertices[i])])
+    elif cmd[0] == 'sum':
+        for it in cmd[1][1:]:
+            idx = it - 1
+            diffVertices[idx] = sum_v([diffVertices[idx], diffVertices[i]])
+    elif cmd[0] == 'had':
+        indices = [x - 1 for x in cmd[1][1:]]
+        if len(indices) > 1:
+            for ind_of_matrix, matrix_ind in enumerate(indices, 0):
+                idxs = indices[:ind_of_matrix + 1] + indices[ind_of_matrix + 1:]
+                matrices = [vertices[i] for i in idxs].append(diffVertices[i])
+                diffVertices[matrix_ind] = sum_v([diffVertices[matrix_ind], had(matrices)])
+        else:
+            diffVertices[indices[0]] = sum_v([diffVertices[indices[0]], diffVertices[i]])
+
+for i in range(m):
+    print_matrix(diffVertices[i])

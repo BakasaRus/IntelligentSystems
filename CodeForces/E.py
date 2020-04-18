@@ -1,4 +1,4 @@
-import math
+from math import exp, log
 
 
 k = int(input())
@@ -27,22 +27,22 @@ for cur_class, words in classes.items():
         if word in words:
             words[word] += alpha
             words[word] /= class_count[cur_class] + 2.0 * alpha
-            classes2[cur_class][word] = math.log(1 - words[word])
-            words[word] = math.log(words[word])
+            classes2[cur_class][word] = log(1 - words[word])
+            words[word] = log(words[word])
     class_count[cur_class] /= n
 
 m = int(input())
 for i in range(m):
     known_words = [word for word in input().split()[1:] if word in alphabet]
     count_mask = [v > 0 for v in class_count.values()]
-    p = {k: math.log(v) if v > 0 else 1.0 for k, v in class_count.items()}
+    p = {k: log(v) if v > 0 else 1.0 for k, v in class_count.items()}
     for word in alphabet:
         classes_source = classes if word in known_words else classes2
         for cur_class, words in classes_source.items():
             p[cur_class] += words[word]
     values = p.values()
     p_max = max(values)
-    l = [math.exp(value - p_max) if count_mask[index] else 0.0 for index, value in enumerate(values, 0)]
+    l = [exp(value - p_max) if count_mask[index] else 0.0 for index, value in enumerate(values, 0)]
     l = [v * p for v, p in zip(l, penalties)]
     s = sum(l)
     res = [v / s for v in l]

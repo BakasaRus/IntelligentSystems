@@ -33,7 +33,7 @@ for cur_class, words in classes.items():
 
 m = int(input())
 for i in range(m):
-    known_words = [word for word in input().split()[1:] if word in alphabet]
+    known_words = set([word for word in input().split()[1:] if word in alphabet])
     count_mask = [v > 0 for v in class_count.values()]
     p = {k: log(v) if v > 0 else 1.0 for k, v in class_count.items()}
     for word in alphabet:
@@ -46,4 +46,4 @@ for i in range(m):
     l = [v * p for v, p in zip(l, penalties)]
     s = sum(l)
     res = [v / s for v in l]
-    print(*res)
+    print(' '.join([str(i) for i in res]))

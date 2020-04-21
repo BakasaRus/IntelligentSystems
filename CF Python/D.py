@@ -57,8 +57,8 @@ def invert(x: Matrix) -> Matrix:
 
 
 def sgd(features: Matrix, res: Vector, n: int, m: int) -> Vector:
-    n_iter = 10000
-    lr = float(5e-4)
+    n_iter = 8888
+    lr = float(9595e-7)
     w = [float(0.)] * (m + 1)
     for i in range(n_iter):
         idx = randint(0, n - 1)
